@@ -9941,7 +9941,7 @@ var Viewer = (function (_super) {
     function Viewer(props) {
         var _this = _super.call(this, props) || this;
         _this.state = {
-            image: './images/baboon.png',
+            image: './images/mandrill.png',
             imageData: null,
             outputWidth: 1,
             outputHeight: 1,

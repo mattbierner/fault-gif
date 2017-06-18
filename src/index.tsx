@@ -26,7 +26,7 @@ class Viewer extends React.Component<null, ViewerState> {
     constructor(props: any) {
         super(props);
         this.state = {
-            image: './images/baboon.png',
+            image: './images/mandrill.png',
 
             imageData: null,
 

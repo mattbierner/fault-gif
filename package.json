@@ -28,6 +28,7 @@
     "giphy-api": "^1.1.16",
     "omggif": "^1.0.8",
     "react": "^15.5.4",
-    "react-dom": "^15.5.4"
+    "react-dom": "^15.5.4",
+    "react-dropzone": "^3.13.2"
   }
 }

@@ -2,7 +2,7 @@ html {
     height: 100%;
 }
 
-html, body, #content, .main {
+html, body, #content, #content > div, .main {
     height: 100%;
     width: 100%;
     min-height: 100%;
@@ -13,6 +13,7 @@ html, body, #content, .main {
 body {
     display: flex;
     flex-direction: column;
+    min-width: 600px;
 }
 
 .spacer {
@@ -26,6 +27,25 @@ body {
 
 .main {
     display: flex;
+}
+
+.drop-overlay {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    padding: 2.5em 0;
+    font-size: 3rem;
+    background: rgba(0,0,0,0.5);
+    text-align: center;
+    color: #fff;
+}
+
+.side-bar {
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid #3337;
 }
 
 @keyframes spin {

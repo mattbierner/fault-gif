@@ -23,6 +23,14 @@
     .value {
         display: block;
     }
+
+    .range-buttons {
+        display: flex;
+        justify-content: center;
+    }
+    .range-buttons button {
+        display: block;
+    }
 }
 
 .label {

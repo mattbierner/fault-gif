@@ -46,9 +46,10 @@ export default class LabeledRange extends React.Component<LabeledRangeProps, nul
                 <span className="min label">{this.props.min}</span>
                 <span className="max label">{this.props.max}</span>
                 <span className="value label">{this.props.value + (this.props.units || '')}</span>
-                <button onClick={this.onPrevious.bind(this)}>-</button>
-
-                <button onClick={this.onNext.bind(this)}>+</button>
+                <div className='range-buttons'>
+                    <button onClick={this.onPrevious.bind(this)}>-</button>
+                    <button onClick={this.onNext.bind(this)}>+</button>
+                </div>
             </div>
         )
     }

@@ -1,11 +1,11 @@
 import * as React from 'react'
 import GifProperties from "./gif_properties";
-import { Gif } from "./image_loader";
+import { ImageFrame } from "./image_loader";
 
 interface GifPickerProps {
-    searchTitle: string
     label: string
     source: string
+    image: ImageFrame
     onChange: (gif: string) => void
 }
 
@@ -17,9 +17,13 @@ export default class GifPicker extends React.Component<GifPickerProps, null> {
 
     render() {
         return (
-            <div className='image-picker'>
+            <div className='image-picker control-group'>
                 <img src={this.props.source} />
-                <input type='file' accept="image/*" onChange={this.onChange.bind(this)} />
+                <GifProperties image={this.props.image} />
+                <input
+                    type='file'
+                    accept='image/*'
+                    onChange={this.onChange.bind(this)} />
             </div>
         )
     }

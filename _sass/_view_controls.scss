@@ -1,3 +1,7 @@
+.view-controls {
+    padding: 0 10px;
+}
+
 .gif-pickers {
     display: flex;
     align-items: center;
@@ -8,7 +12,7 @@
     flex: 1;
     display: flex;
     flex-direction: column;
-
+    align-items: center;
     .label {
         display: block;
         padding-bottom: 0.4em;
@@ -23,4 +27,8 @@
         max-width: 100px;
         max-height: 100px;
     }
+}
+
+.control-group {
+    padding-bottom: 2em;
 }

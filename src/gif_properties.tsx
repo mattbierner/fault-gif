@@ -1,6 +1,6 @@
 
 import * as React from 'react'
-import { Gif } from "./image_loader";
+import { ImageFrame } from "./image_loader";
 
 /**
  * Property of a gif.
@@ -18,13 +18,12 @@ class GifProperty extends React.Component<{ value: string | number, label: strin
 /**
  * Set of metadata displayed about a gif.
  */
-export default class GifProperties extends React.Component<{ gif: Gif }, null> {
+export default class GifProperties extends React.Component<{ image: ImageFrame }, null> {
     render() {
         return (
             <div className="gif-properties">
-                <GifProperty label="Frames" value={this.props.gif && this.props.gif.frames ? this.props.gif.frames.length : ''} />
-                <GifProperty label="Width" value={this.props.gif ? this.props.gif.width : ''} />
-                <GifProperty label="Height" value={this.props.gif ? this.props.gif.height : ''} />
+                <GifProperty label="Width" value={this.props.image ? this.props.image.width : ''} />
+                <GifProperty label="Height" value={this.props.image ? this.props.image.height : ''} />
             </div>
         );
     }

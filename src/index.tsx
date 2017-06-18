@@ -6,6 +6,7 @@ import LabeledSlider from './labeled_slider';
 import LoadingSpinner from './loading_spinner';
 import GifPlayer from './gif_player';
 import GifPicker from "./gif_picker";
+const Dropzone = require('react-dropzone')
 
 interface ViewerState {
     image: string
@@ -16,6 +17,7 @@ interface ViewerState {
     outputHeight: number
 
     loadingGif: boolean
+    dropzoneActive: boolean
 
     error?: string
 }
@@ -31,6 +33,7 @@ class Viewer extends React.Component<null, ViewerState> {
             outputWidth: 1,
             outputHeight: 1,
 
+            dropzoneActive: false,
             loadingGif: false
         }
     }
@@ -106,55 +109,80 @@ class Viewer extends React.Component<null, ViewerState> {
         })
     }
 
+    onDragEnter() {
+        this.setState({
+            dropzoneActive: true
+        });
+    }
+
+    onDragLeave() {
+        this.setState({
+            dropzoneActive: false
+        });
+    }
+
+    onDrop(files: any[]) {
+        if (files.length) {
+            this.onImageChanged(window.URL.createObjectURL(files[0]))
+        }
+
+        this.setState({ dropzoneActive: false })
+    }
+
     render() {
         return (
-            <div className="main container gif-viewer" id="viewer">
-                <div className='side-bar'>
-                    <header id="site-header">
-                        <img id="site-logo" title="blueframe" src="images/logo.svg" />
-                        <nav className="links">
-                            <a href="https://github.com/mattbierner/blueframe">Source</a>
-                            <a href="https://github.com/mattbierner/blueframe/blob/gh-pages/documentation/about.md">About</a>
-                            <a href="http://blog.mattbierner.com/blueframe/">Post</a>
-                        </nav>
-                    </header>
-                    <div className="view-controls">
-                        <div className='gif-pickers'>
+            <Dropzone
+                disableClick
+                style={{}}
+                accept='image/*'
+                onDrop={this.onDrop.bind(this)}
+                onDragEnter={this.onDragEnter.bind(this)}
+                onDragLeave={this.onDragLeave.bind(this)}
+            >
+                {this.state.dropzoneActive && <div className='drop-overlay'>Drop files...</div>}
+                <div className="main container gif-viewer" id="viewer">
+                    <div className='side-bar'>
+                        <header id="site-header">
+                            <img id="site-logo" title="blueframe" src="images/logo.svg" />
+                            <nav className="links">
+                                <a href="https://github.com/mattbierner/blueframe">Source</a>
+                                <a href="https://github.com/mattbierner/blueframe/blob/gh-pages/documentation/about.md">About</a>
+                                <a href="http://blog.mattbierner.com/blueframe/">Post</a>
+                            </nav>
+                        </header>
+                        <div className="view-controls">
                             <GifPicker
-                                searchTitle='Gif'
                                 label=''
                                 source={this.state.image}
-                                onChange={this.onImageChanged.bind(this)} />
+                                onChange={this.onImageChanged.bind(this)}
+                                image={this.state.imageData} />
+
+                            <LabeledSlider
+                                title='width'
+                                min={1}
+                                max={this.state.imageData ? this.state.imageData.width * 10 : 0}
+                                value={this.state.outputWidth}
+                                onChange={this.onWidthChange.bind(this)} />
+
+                            <LabeledSlider
+                                title='height'
+                                min={1}
+                                max={this.state.imageData ? this.state.imageData.height * 10 : 0}
+                                value={this.state.outputHeight}
+                                onChange={this.onHeightChange.bind(this)} />
+
+                            <button onClick={this.onReset.bind(this)}>Reset</button>
                         </div>
+                        <div className="spacer"></div>
 
-                        <LabeledSlider
-                            title='width'
-                            min={1}
-                            max={this.state.imageData ? this.state.imageData.width * 10 : 0}
-                            value={this.state.outputWidth}
-                            onChange={this.onWidthChange.bind(this)} />
-
-                        <LabeledSlider
-                            title='height'
-                            min={1}
-                            max={this.state.imageData ? this.state.imageData.height * 10 : 0}
-                            value={this.state.outputHeight}
-                            onChange={this.onHeightChange.bind(this)} />
-
-                        <button onClick={this.onReset.bind(this)}>Reset</button>
+                        <footer id="site-footer">
+                            <p id="copyright">&copy; 2017 <a href="http://mattbierner.com">Matt Bierner</a></p>
+                        </footer>
                     </div>
-                    <div className="spacer"></div>
 
-                    <footer id="site-footer">
-                        <a href="http://giphy.com/">
-                            <img src="./images/PoweredBy_200px-Black_HorizLogo.png" alt="Powered by Giphy" />
-                        </a>
-                        <p id="copyright">&copy; 2017 <a href="http://mattbierner.com">Matt Bierner</a></p>
-                    </footer>
+                    <GifPlayer {...this.state} />
                 </div>
-
-                <GifPlayer {...this.state} />
-            </div>
+            </Dropzone>
         )
     }
 }

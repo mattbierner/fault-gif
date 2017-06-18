@@ -1,0 +1,33 @@
+.gif-figure {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    max-width: 100%;
+    overflow-x: scroll;
+}
+
+.gif-properties {
+    font-size: 12px;
+    color: $light-gray;
+
+    .property {
+        display: inline-block;
+        padding: 0 0.6em;
+    }
+
+    .value {
+        font-style: italic;
+    }
+}
+
+
+@media only screen and (max-width: 800px) {
+    .gif-viewer {
+        flex-flow: column;
+    }
+
+    .view-controls {
+        margin: 0 auto;
+    }
+}

@@ -27,7 +27,7 @@ Now, what happens if we want to decrease the width of the above image to make it
 
 ![](documentation/vertical.png)
 
-Because we started with 9 pixels in the 3x3 image, to preserve every pixel our new 2 pixel wide output image must be 5 pixels high, with one unused pixel at the end. Here are the indices of each pixel in the output image:
+Because we started with 9 pixels in the 3x3 image, the new 2 pixel wide output image must be 5 pixels high in order to have room for the 9 pixels plus one unused pixel at the end. Here are the indices of each pixel in the output image:
 
 ```
 0 1
@@ -37,7 +37,7 @@ Because we started with 9 pixels in the 3x3 image, to preserve every pixel our n
 8 X
 ```
 
-We can resizing the image horizontally using the same technique:
+We can resize the image horizontally using the same technique:
 
 ![](documentation/horizontal.png)
 
@@ -48,7 +48,10 @@ We can resizing the image horizontally using the same technique:
 8 X X X
 ```
 
+### Using the Site
+[The reflow site][site] allows you to upload any image for reflow either by drag and drop or by using the file selector. Images are only stored client side.
 
+The sliders in the left panel control the dimensions of the output image. The dimensions are linked so that adjusting the width will also automatically adjust the height of the ouput image so that it can fit all of the original image's pixels.
 
 
 ## Building and Running

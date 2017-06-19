@@ -1,6 +1,6 @@
 title: "reflow"
 
-description: "Resizing images by reflowing array of pixel into new image dimensions"
+description: "Resizing images by reflowing their pixels into new image dimensions"
 
 # Build settings
 markdown: kramdown

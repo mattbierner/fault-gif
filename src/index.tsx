@@ -152,7 +152,7 @@ class Viewer extends React.Component<null, ViewerState> {
                             <img id="site-logo" title="reflow" src="images/logo.svg" />
                             <nav className="links">
                                 <a href="https://github.com/mattbierner/reflow">Source</a>
-                                <a href="https://github.com/mattbierner/reflow/blob/gh-pages/documentation/about.md">About</a>
+                                <a href="https://github.com/mattbierner/reflow/#readme">About</a>
                                 <a href="http://blog.mattbierner.com/reflow/">Post</a>
                             </nav>
                         </header>

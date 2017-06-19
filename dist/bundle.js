@@ -11288,7 +11288,7 @@ var Viewer = (function (_super) {
                         React.createElement("img", { id: "site-logo", title: "reflow", src: "images/logo.svg" }),
                         React.createElement("nav", { className: "links" },
                             React.createElement("a", { href: "https://github.com/mattbierner/reflow" }, "Source"),
-                            React.createElement("a", { href: "https://github.com/mattbierner/reflow/blob/gh-pages/documentation/about.md" }, "About"),
+                            React.createElement("a", { href: "https://github.com/mattbierner/reflow/#readme" }, "About"),
                             React.createElement("a", { href: "http://blog.mattbierner.com/reflow/" }, "Post"))),
                     React.createElement("div", { className: "view-controls" },
                         React.createElement(image_picker_1.default, { label: '', source: this.state.image, onChange: this.onImageChanged.bind(this), image: this.state.imageData }),

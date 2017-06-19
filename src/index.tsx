@@ -1,28 +1,29 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
-import { Gif, ImageFrame, loadGif, loadImage } from './image_loader';
+import { ImageFrame, loadImage } from './image_loader';
 import LabeledSlider from './labeled_slider';
 import LoadingSpinner from './loading_spinner';
-import GifPlayer from './gif_player';
-import GifPicker from "./gif_picker";
+import ImageViewer from './image_viewer';
+import ImagePicker from "./image_picker";
 const Dropzone = require('react-dropzone')
 
 interface ViewerState {
     image: string
-
     imageData: ImageFrame | null
 
     outputWidth: number
     outputHeight: number
 
-    loadingGif: boolean
+    loadingImage: boolean
     dropzoneActive: boolean
 
     error?: string
 }
 
 class Viewer extends React.Component<null, ViewerState> {
+    private player: ImageViewer;
+
     constructor(props: any) {
         super(props);
         this.state = {
@@ -34,7 +35,7 @@ class Viewer extends React.Component<null, ViewerState> {
             outputHeight: 1,
 
             dropzoneActive: false,
-            loadingGif: false
+            loadingImage: false
         }
     }
 
@@ -42,16 +43,15 @@ class Viewer extends React.Component<null, ViewerState> {
         this.loadImage(this.state.image)
     }
 
-    private loadImage(gif: string) {
-        this.setState({ loadingGif: true })
+    private loadImage(image: string) {
+        this.setState({ loadingImage: true })
 
         return (
-            gif && this.state.imageData && this.state.imageData.source === gif
+            image && this.state.imageData && this.state.imageData.source === image
                 ? Promise.resolve(this.state.imageData)
-                : loadImage(gif, true)
-        )
+                : loadImage(image, true))
             .then(leftData => {
-                if (gif !== this.state.image)
+                if (image !== this.state.image)
                     return
 
                 this.setState({
@@ -60,19 +60,19 @@ class Viewer extends React.Component<null, ViewerState> {
                     outputWidth: leftData.width,
                     outputHeight: leftData.height,
 
-                    loadingGif: false,
+                    loadingImage: false,
                     error: null
                 })
             })
             .catch(e => {
-                if (gif !== this.state.image)
+                if (image !== this.state.image)
                     return
 
                 console.error(e)
                 this.setState({
                     imageData: null,
 
-                    loadingGif: false,
+                    loadingImage: false,
                     error: 'Could not load gif'
                 })
             });
@@ -109,24 +109,30 @@ class Viewer extends React.Component<null, ViewerState> {
         })
     }
 
-    onDragEnter() {
+    private onDragEnter() {
         this.setState({
             dropzoneActive: true
         });
     }
 
-    onDragLeave() {
+    private onDragLeave() {
         this.setState({
             dropzoneActive: false
         });
     }
 
-    onDrop(files: any[]) {
+    private onDrop(files: any[]) {
         if (files.length) {
             this.onImageChanged(window.URL.createObjectURL(files[0]))
         }
 
         this.setState({ dropzoneActive: false })
+    }
+
+    private export() {
+        this.player.export().then(url => {
+            window.open(url)
+        });
     }
 
     render() {
@@ -139,7 +145,7 @@ class Viewer extends React.Component<null, ViewerState> {
                 onDragEnter={this.onDragEnter.bind(this)}
                 onDragLeave={this.onDragLeave.bind(this)}
             >
-                {this.state.dropzoneActive && <div className='drop-overlay'>Drop files...</div>}
+                {this.state.dropzoneActive && <div className='drop-overlay'>Drop file...</div>}
                 <div className="main container gif-viewer" id="viewer">
                     <div className='side-bar'>
                         <header id="site-header">
@@ -151,7 +157,7 @@ class Viewer extends React.Component<null, ViewerState> {
                             </nav>
                         </header>
                         <div className="view-controls">
-                            <GifPicker
+                            <ImagePicker
                                 label=''
                                 source={this.state.image}
                                 onChange={this.onImageChanged.bind(this)}
@@ -160,27 +166,28 @@ class Viewer extends React.Component<null, ViewerState> {
                             <LabeledSlider
                                 title='width'
                                 min={1}
-                                max={this.state.imageData ? this.state.imageData.width * 10 : 0}
+                                max={this.state.imageData ? this.state.imageData.width * 4 : 0}
                                 value={this.state.outputWidth}
                                 onChange={this.onWidthChange.bind(this)} />
 
                             <LabeledSlider
                                 title='height'
                                 min={1}
-                                max={this.state.imageData ? this.state.imageData.height * 10 : 0}
+                                max={this.state.imageData ? this.state.imageData.height * 4 : 0}
                                 value={this.state.outputHeight}
                                 onChange={this.onHeightChange.bind(this)} />
 
                             <button onClick={this.onReset.bind(this)}>Reset</button>
+
+                            <button onClick={this.export.bind(this)}>Export</button>
                         </div>
-                        <div className="spacer"></div>
 
                         <footer id="site-footer">
                             <p id="copyright">&copy; 2017 <a href="http://mattbierner.com">Matt Bierner</a></p>
                         </footer>
                     </div>
 
-                    <GifPlayer {...this.state} />
+                    <ImageViewer {...this.state} ref={player => this.player = player} />
                 </div>
             </Dropzone>
         )

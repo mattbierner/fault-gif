@@ -1,8 +1,8 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import { Gif, ImageFrame } from "./image_loader";
+import { ImageFrame } from "./image_loader";
 
-interface GifRendererProps {
+interface RendererProps {
     image: ImageFrame | null
     outputWidth: number
 }
@@ -29,12 +29,12 @@ uniform vec2 outputSize;
 varying vec2 v_texCoord;
 
 void main() {
-    vec2 xy = floor(v_texCoord * imageSize);
+    vec2 xy = floor(v_texCoord * outputSize);
+    float pixelOffset = xy.x + (xy.y * outputSize.x);
 
-    float pixelOffset = xy.x + xy.y * imageSize.x;
-    vec2 newXy = vec2(mod(pixelOffset, outputSize.x), floor(pixelOffset / outputSize.x));
+    vec2 newXy = vec2(mod(pixelOffset, imageSize.x), floor(pixelOffset / imageSize.x));
 
-    vec4 sample = texture2D(u_image, newXy / outputSize);
+    vec4 sample = texture2D(u_image, newXy / imageSize);
     gl_FragColor = sample;
 }
 `
@@ -50,10 +50,8 @@ const createShader = (gl: WebGLRenderingContext, type: number, source: string) =
     return shader
 }
 
-/**
- * Renders a interleaved gif. 
- */
-export default class GifRenderer extends React.Component<GifRendererProps, null> {
+export default class ImageRenderer extends React.Component<RendererProps, null> {
+    texture?: WebGLTexture;
     outputSizeLocation: WebGLUniformLocation;
     imageSizeLocation: WebGLUniformLocation
     _ctx: WebGLRenderingContext
@@ -61,13 +59,12 @@ export default class GifRenderer extends React.Component<GifRendererProps, null>
 
     componentDidMount() {
         this._canvas = ReactDOM.findDOMNode(this) as HTMLCanvasElement
-        this._ctx = this._canvas.getContext('webgl')
+        this._ctx = this._canvas.getContext('webgl', { preserveDrawingBuffer: true })
 
         this.setup3d(this._ctx)
-
     }
 
-    componentWillReceiveProps(newProps: GifRendererProps) {
+    componentWillReceiveProps(newProps: RendererProps) {
         if (!newProps.image) {
             return
         }
@@ -75,6 +72,17 @@ export default class GifRenderer extends React.Component<GifRendererProps, null>
         if (newProps.image !== this.props.image) {
             this.updateSize(newProps.image.width, newProps.image.height)
             this._ctx.uniform2fv(this.imageSizeLocation, [newProps.image.width, newProps.image.height])
+
+            if (this.texture) {
+                this._ctx.deleteTexture(this.texture)
+            }
+            this.texture = this._ctx.createTexture()
+            this._ctx.bindTexture(this._ctx.TEXTURE_2D, this.texture);
+            this._ctx.texParameteri(this._ctx.TEXTURE_2D, this._ctx.TEXTURE_WRAP_S, this._ctx.CLAMP_TO_EDGE);
+            this._ctx.texParameteri(this._ctx.TEXTURE_2D, this._ctx.TEXTURE_WRAP_T, this._ctx.CLAMP_TO_EDGE);
+            this._ctx.texParameteri(this._ctx.TEXTURE_2D, this._ctx.TEXTURE_MIN_FILTER, this._ctx.NEAREST);
+            this._ctx.texParameteri(this._ctx.TEXTURE_2D, this._ctx.TEXTURE_MAG_FILTER, this._ctx.NEAREST);
+            this._ctx.texImage2D(this._ctx.TEXTURE_2D, 0, this._ctx.RGBA, this._ctx.RGBA, this._ctx.UNSIGNED_BYTE, newProps.image.canvas);
         }
 
         if (newProps.outputWidth !== this.props.outputWidth) {
@@ -86,11 +94,14 @@ export default class GifRenderer extends React.Component<GifRendererProps, null>
         this.render3d(newProps.image, newProps)
     }
 
+    public export(): Promise<string> {
+        return Promise.resolve(this._canvas.toDataURL('image/png'))
+    }
+
     private updateSize(width: number, height: number): void {
         this._canvas.width = width
         this._canvas.height = height
         this._ctx.viewport(0, 0, width, height)
-
     }
 
     private setup3d(gl: WebGLRenderingContext) {
@@ -130,32 +141,17 @@ export default class GifRenderer extends React.Component<GifRendererProps, null>
         gl.enableVertexAttribArray(texCoordLocation)
         gl.vertexAttribPointer(texCoordLocation, 2, gl.FLOAT, false, 0, 0)
 
-
         this.imageSizeLocation = gl.getUniformLocation(program, 'imageSize')
         this.outputSizeLocation = gl.getUniformLocation(program, 'outputSize')
     }
 
-    private render3d(imageData: ImageFrame, props: GifRendererProps) {
-        if (!this._ctx) {
-            return
-        }
-        const gl = this._ctx
-        if (imageData) {
-            var texture = gl.createTexture();
-            gl.bindTexture(gl.TEXTURE_2D, texture);
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, imageData.canvas);
-
-            // draw
-            gl.drawArrays(gl.TRIANGLES, 0, 6);
-
+    private render3d(imageData: ImageFrame, props: RendererProps) {
+        if (this._ctx && imageData && this.texture) {
+            this._ctx.drawArrays(this._ctx.TRIANGLES, 0, 6)
         }
     }
 
     render() {
-        return (<canvas className="gif-canvas" />)
+        return (<canvas className="image-canvas" />)
     }
 }

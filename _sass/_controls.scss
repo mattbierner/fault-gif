@@ -31,6 +31,10 @@
     .range-buttons button {
         display: block;
     }
+
+     .range-buttons button:first-child {
+         margin-right: 0.4em;
+     }
 }
 
 .label {

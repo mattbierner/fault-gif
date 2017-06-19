@@ -1,6 +1,6 @@
-title: "blueframe"
+title: "reflow"
 
-description: "Splicing a single frame of pornography into a gif"
+description: "Resizing images by reflowing array of pixel into new image dimensions"
 
 # Build settings
 markdown: kramdown

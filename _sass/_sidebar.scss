@@ -58,7 +58,7 @@
 @media only screen and (max-width: 700px),
 only screen and (max-height: 1000px) {
     #site-header {
-        height: 200px;
+        height: 160px;
         padding-bottom: 1.6em;
     }
 }
@@ -70,6 +70,11 @@ only screen and (max-height: 1000px) {
 }
 
 @media only screen and (max-width: 700px) {
+    .side-bar {
+        width: 240px
+    }
+
+
     #site-header {
         #site-title {
             font-size: 32px;
@@ -80,6 +85,10 @@ only screen and (max-height: 1000px) {
 }
 
 @media only screen and (max-width: 500px) {
+    .side-bar {
+        width: 200px
+    }
+
     #site-header {
         #site-title {
             font-size: 28px;

@@ -149,11 +149,11 @@ class Viewer extends React.Component<null, ViewerState> {
                 <div className="main container gif-viewer" id="viewer">
                     <div className='side-bar'>
                         <header id="site-header">
-                            <img id="site-logo" title="blueframe" src="images/logo.svg" />
+                            <img id="site-logo" title="reflow" src="images/logo.svg" />
                             <nav className="links">
-                                <a href="https://github.com/mattbierner/blueframe">Source</a>
-                                <a href="https://github.com/mattbierner/blueframe/blob/gh-pages/documentation/about.md">About</a>
-                                <a href="http://blog.mattbierner.com/blueframe/">Post</a>
+                                <a href="https://github.com/mattbierner/reflow">Source</a>
+                                <a href="https://github.com/mattbierner/reflow/blob/gh-pages/documentation/about.md">About</a>
+                                <a href="http://blog.mattbierner.com/reflow/">Post</a>
                             </nav>
                         </header>
                         <div className="view-controls">
@@ -177,7 +177,8 @@ class Viewer extends React.Component<null, ViewerState> {
                                 value={this.state.outputHeight}
                                 onChange={this.onHeightChange.bind(this)} />
 
-                            <button onClick={this.onReset.bind(this)}>Reset</button>
+
+                            <button className='reset-button' onClick={this.onReset.bind(this)}>Reset</button>
 
                             <button onClick={this.export.bind(this)}>Export</button>
                         </div>
